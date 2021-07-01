@@ -11,12 +11,68 @@ use App\Repository\SpecialiteRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 
 class MedecinController extends Controller
 {
+
+    /**
+     * @Route("/Api/Medecin/AfficherMed", name="AfficherMedecinsMobile")
+     */
+    public function AfficherMedMobile(): Response
+    {
+
+        $medecins= $this->getDoctrine()->getRepository(Medecin::class)->findAll();
+        $jsonContent= Array();
+
+        foreach ($medecins as $key=>$med){
+            $jsonContent[$key]['id']= $med->getId();
+            $jsonContent[$key]['nom']= $med->getNom();
+            $jsonContent[$key]['prenom']= $med->getPrenom();
+            $jsonContent[$key]['mail']= $med->getEmail();
+            $jsonContent[$key]['num']= $med->getNum();
+            $jsonContent[$key]['pic']= $med->getPic();
+            $specvalue="";
+            $specialite= $med->getSpecialite();
+             foreach ( $specialite as $spec){
+                 $specvalue=  $specvalue.$spec->getTitre().", ";
+            }
+            $jsonContent[$key]['specialite']=$specvalue;
+
+
+        }
+        return new JsonResponse($jsonContent);
+    }
+    /**
+     * @Route("/Api/Medecin/AfficherMed/{nom}", name="AfficherMedecinsNomMobile")
+     */
+    public function AfficherMedMobileParNom($nom): Response
+    {
+
+        $medecins= $this->getDoctrine()->getRepository(Medecin::class)->rechercher($nom);
+        $jsonContent= Array();
+
+        foreach ($medecins as $key=>$med){
+            $jsonContent[$key]['id']= $med->getId();
+            $jsonContent[$key]['nom']= $med->getNom();
+            $jsonContent[$key]['prenom']= $med->getPrenom();
+            $jsonContent[$key]['mail']= $med->getEmail();
+            $jsonContent[$key]['num']= $med->getNum();
+            $jsonContent[$key]['pic']= $med->getPic();
+            $specvalue="";
+            $specialite= $med->getSpecialite();
+            foreach ( $specialite as $spec){
+                $specvalue=  $specvalue.$spec->getTitre().", ";
+            }
+            $jsonContent[$key]['specialite']=$specvalue;
+
+
+        }
+        return new JsonResponse($jsonContent);
+    }
     /**
      * @Route("/searchdatamedecin", name="med")
      */

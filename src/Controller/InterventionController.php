@@ -13,6 +13,7 @@ use App\Repository\InterventionRepository;
 use App\Repository\MedecinRepository;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -168,6 +169,18 @@ class InterventionController extends Controller
             4
         );
         return $this->render("medecin/consultermedecinFront.html.twig",array('listmedecin'=>$medecin));
+
+    }
+    /**
+     * @Route("/API/StatMobile", name="statmobile")
+     */
+
+    public function statmobile(MedecinRepository $medecinRepository)
+    {    $jsonContent= Array();
+
+        $s=$medecinRepository->getCustomInformations();
+        $jsonContent=$s;
+       return new JsonResponse($jsonContent);
 
     }
 
